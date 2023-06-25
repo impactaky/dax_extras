@@ -9,4 +9,8 @@ Deno.test("Quick example", async () => {
   for await (const line of stream) {
     assertEquals(line, "bug : abcdef");
   }
+
+  const result = await $`echo hello`
+    .xargs((input) => $`echo ${input} world`);
+  assertEquals(result[0].stdout, "hello world\n");
 });
