@@ -1,7 +1,7 @@
 import { $, CommandBuilder, TextLineStream } from "./deps.ts";
 
 import { FilterFunction, MapFunction } from "./linestream/transformer.ts";
-import { LineStream } from "./linestream/linestream.ts";
+import { LineStream, XargsFunction } from "./linestream/linestream.ts";
 
 declare module "./deps.ts" {
   interface CommandBuilder {
@@ -10,6 +10,7 @@ declare module "./deps.ts" {
     $(next: string): CommandBuilder;
     map(mapFunction: MapFunction<string, string>): LineStream;
     filter(filterFunction: FilterFunction<string>): LineStream;
+    xargs(xargsFunction: XargsFunction): void;
   }
 }
 
@@ -39,6 +40,12 @@ CommandBuilder.prototype.filter = function (
   filterFunction: FilterFunction<string>,
 ) {
   return this.lineStream().filter(filterFunction);
+};
+
+CommandBuilder.prototype.xargs = function (
+  xargsFunction: XargsFunction,
+) {
+  return this.lineStream().xargs(xargsFunction);
 };
 
 export default $;

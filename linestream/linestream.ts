@@ -7,6 +7,8 @@ import {
   MapStream,
 } from "./transformer.ts";
 
+export type XargsFunction = (arg0: string) => CommandBuilder;
+
 class LineToByteStream extends TransformStream<string, Uint8Array> {
   #encoder: TextEncoder;
   constructor() {
@@ -53,5 +55,12 @@ export class LineStream {
   }
   filter(filterFunction: FilterFunction<string>): LineStream {
     return this.pipeThrough(new FilterStream(filterFunction));
+  }
+  async xargs(command: (arg0: string) => CommandBuilder) {
+    const processes: CommandBuilder[] = [];
+    for await (const line of this.stream) {
+        processes.push(command(line));
+    }
+    await Promise.all(processes);
   }
 }
