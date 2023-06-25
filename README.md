@@ -10,7 +10,7 @@ import $ from "https://raw.githubusercontent.com/impactaky/dax_extras/main/mod.t
 
 const stream = $`echo "abc\nabcde\nabcdef\nbcdefg"`
   .map((l) => `bug : ${l}`)
-  .$(`grep 'bug : a'`)
+  .$(`grep 'bug : a'`).noThrow()
   .filter((l) => l.length > "bug : ".length + 5);
 for await (const line of stream) {
   console.log(`de${line}`);
