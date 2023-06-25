@@ -1,6 +1,5 @@
 import $ from "./mod.ts";
 import { assertEquals } from "./test_deps.ts";
-import {} from "https://deno.land/x/sigmastd@0.2.0/mod.ts";
 
 Deno.test("Quick example", async () => {
   const stream = $`echo "abc\nabcde\nabcdef\nbcdefg"`
