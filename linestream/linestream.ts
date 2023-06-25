@@ -59,7 +59,7 @@ export class LineStream {
   async xargs(command: XargsFunction): Promise<CommandResult[]> {
     const processes: CommandChild[] = [];
     for await (const line of this.stream) {
-      processes.push(command(line).spawn());
+      processes.push(command(line).stdout("piped").spawn());
     }
     return await Promise.all(processes);
   }

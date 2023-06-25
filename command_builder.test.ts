@@ -11,6 +11,6 @@ Deno.test("Quick example", async () => {
   }
 
   const result = await $`echo hello`
-    .xargs((input) => $`echo ${input} world`.stdout("piped"));
+    .xargs((input) => $`echo ${input} world`);
   assertEquals(result[0].stdout, "hello world\n");
 });
