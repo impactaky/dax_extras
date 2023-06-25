@@ -56,7 +56,7 @@ export class LineStream {
   filter(filterFunction: FilterFunction<string>): LineStream {
     return this.pipeThrough(new FilterStream(filterFunction));
   }
-  async xargs(command: (arg0: string) => CommandBuilder) : PromiseLike<CommandResult[]> {
+  async xargs(command: (arg0: string) => CommandBuilder) : Promise<CommandResult[]> {
     const processes: CommandBuilder[] = [];
     for await (const line of this.stream) {
         processes.push(command(line));
