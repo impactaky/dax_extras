@@ -63,6 +63,6 @@ export class LineStream {
     for await (const line of this.stream) {
       processes.push(command(line));
     }
-    return { result: processes.pop()! };
+    return { result: processes.pop()! }; //TODO: figure if this assert (`!`) is safe
   }
 }
