@@ -1,5 +1,6 @@
 import $ from "./mod.ts";
 import { assertEquals } from "./test_deps.ts";
+import {} from "https://deno.land/x/sigmastd@0.2.0/mod.ts";
 
 Deno.test("Quick example", async () => {
   const stream = $`echo "abc\nabcde\nabcdef\nbcdefg"`
@@ -11,6 +12,8 @@ Deno.test("Quick example", async () => {
   }
 
   const result = await $`echo hello`
-    .xargs((input) => $`echo ${input} world`);
-  assertEquals(result[0].stdout, "hello world\n");
+    .xargs((input) => $`echo ${input} world`).then((res) =>
+      res.c.xargs((input) => $`echo ${input} world2`)
+    );
+  assertEquals(await result.c.text(), "hello world world2");
 });
