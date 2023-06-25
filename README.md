@@ -8,7 +8,7 @@ A useful util library for writing shell script stream processing using
 ```typescript
 import $ from "https://raw.githubusercontent.com/impactaky/dax_extras/1.0.0/mod.ts";
 
-const stream = $`echo "abc\nabcde\nabcdef\nbcdefg"`
+await $`echo "abc\nabcde\nabcdef\nbcdefg"`
   .map((l) => `bug : ${l}`)
   .$(`grep 'bug : a'`).noThrow()
   .filter((l) => l.length > "bug : ".length + 3)
