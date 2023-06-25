@@ -1,4 +1,4 @@
-import { CommandBuilder, CommandChild } from "../deps.ts";
+import { CommandBuilder, CommandChild, CommandResult } from "../deps.ts";
 
 import {
   FilterFunction,
@@ -56,11 +56,11 @@ export class LineStream {
   filter(filterFunction: FilterFunction<string>): LineStream {
     return this.pipeThrough(new FilterStream(filterFunction));
   }
-  async xargs(command: XargsFunction): Promise<CommandChild[]> {
+  async xargs(command: XargsFunction): Promise<CommandResult[]> {
     const processes: CommandChild[] = [];
     for await (const line of this.stream) {
       processes.push(command(line).spawn());
     }
-    return processes;
+    return await Promise.all(processes);
   }
 }
