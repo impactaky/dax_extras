@@ -42,10 +42,10 @@ CommandBuilder.prototype.filter = function (
   return this.lineStream().filter(filterFunction);
 };
 
-CommandBuilder.prototype.xargs = async function (
+CommandBuilder.prototype.xargs = function (
   xargsFunction: XargsFunction,
 ) {
-  return await this.lineStream().xargs(xargsFunction);
+  return this.lineStream().xargs(xargsFunction);
 };
 
 export default $;
