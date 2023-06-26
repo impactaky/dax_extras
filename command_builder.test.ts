@@ -12,9 +12,8 @@ Deno.test("Quick example", async () => {
 
   {
     const result = await $`echo hello`
-      .xargs((input) => $`echo ${input} world`).then((output) =>
-        output[0].xargs((input) => $`echo ${input} world2`)
-      );
+      .xargs((input) => $`echo ${input} world`)
+      .then((output) => output[0].xargs((input) => $`echo ${input} world2`));
     assertEquals(await result[0].text(), "hello world world2");
   }
   {
