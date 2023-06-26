@@ -10,7 +10,7 @@ declare module "./deps.ts" {
     $(next: string): CommandBuilder;
     map(mapFunction: MapFunction<string, string>): LineStream;
     filter(filterFunction: FilterFunction<string>): LineStream;
-    xargs(xargsFunction: XargsFunction): Promise<{ result: CommandBuilder }>;
+    xargs(xargsFunction: XargsFunction): Promise<CommandBuilder[]>;
   }
 }
 
