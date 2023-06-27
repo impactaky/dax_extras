@@ -6,6 +6,7 @@ export class MapStream<T, U> extends TransformStream<T, U> {
       transform: (chunk, controller) => this.#handle(chunk, controller),
     });
   }
+
   #handle(chunk: T, controller: TransformStreamDefaultController<U>) {
     controller.enqueue(this.mapFunction(chunk));
   }
@@ -19,6 +20,7 @@ export class FilterStream<T> extends TransformStream<T, T> {
       transform: (chunk, controller) => this.#handle(chunk, controller),
     });
   }
+
   #handle(chunk: T, controller: TransformStreamDefaultController<T>) {
     if (this.filterFunction(chunk)) {
       controller.enqueue(chunk);
