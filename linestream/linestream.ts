@@ -63,4 +63,18 @@ export class LineStream {
     }
     return processes;
   }
+  async text(): Promise<string> {
+    let text = "";
+    for await (const line of this.stream) {
+      text += line + "\n";
+    }
+    return text;
+  }
+  async lines(): Promise<string[]> {
+    const lines: string[] = [];
+    for await (const line of this.stream) {
+      lines.push(line);
+    }
+    return lines;
+  }
 }
