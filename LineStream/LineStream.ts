@@ -35,10 +35,6 @@ export class LineStream {
     this.stream = stream;
   }
 
-  pipeThrough(transform: TransformStream): LineStream {
-    return new LineStream(this.stream.pipeThrough(transform));
-  }
-
   async *[Symbol.asyncIterator]() {
     const reader = this.stream.getReader();
     while (true) {
@@ -46,6 +42,26 @@ export class LineStream {
       if (done) break;
       yield value;
     }
+  }
+
+  async text(): Promise<string> {
+    let text = "";
+    for await (const line of this.stream) {
+      text += line + "\n";
+    }
+    return text;
+  }
+
+  async lines(): Promise<string[]> {
+    const lines: string[] = [];
+    for await (const line of this.stream) {
+      lines.push(line);
+    }
+    return lines;
+  }
+
+  pipeThrough(transform: TransformStream): LineStream {
+    return new LineStream(this.stream.pipeThrough(transform));
   }
 
   pipe(next: CommandBuilder): CommandBuilder {
@@ -72,21 +88,5 @@ export class LineStream {
       processes.push(command(line));
     }
     return processes;
-  }
-
-  async text(): Promise<string> {
-    let text = "";
-    for await (const line of this.stream) {
-      text += line + "\n";
-    }
-    return text;
-  }
-
-  async lines(): Promise<string[]> {
-    const lines: string[] = [];
-    for await (const line of this.stream) {
-      lines.push(line);
-    }
-    return lines;
   }
 }
