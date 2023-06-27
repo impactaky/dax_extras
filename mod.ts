@@ -1,4 +1,4 @@
-import { $, CommandBuilder, CommandResult, TextLineStream } from "./deps.ts";
+import { $, CommandBuilder, TextLineStream } from "./deps.ts";
 
 import { FilterFunction, MapFunction } from "./linestream/transformer.ts";
 import { LineStream, XargsFunction } from "./linestream/linestream.ts";
@@ -10,7 +10,7 @@ declare module "./deps.ts" {
     $(next: string): CommandBuilder;
     map(mapFunction: MapFunction<string, string>): LineStream;
     filter(filterFunction: FilterFunction<string>): LineStream;
-    xargs(xargsFunction: XargsFunction): Promise<CommandResult[]>;
+    xargs(xargsFunction: XargsFunction): Promise<CommandBuilder[]>;
   }
 }
 

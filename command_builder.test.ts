@@ -9,8 +9,18 @@ Deno.test("Quick example", async () => {
   for await (const line of stream) {
     assertEquals(line, "bug : abcdef");
   }
+});
 
+Deno.test("xargs one-line", async () => {
   const result = await $`echo hello`
-    .xargs((input) => $`echo ${input} world`.stdout("piped"));
-  assertEquals(result[0].stdout, "hello world\n");
+    .xargs((input) => $`echo ${input} world`)
+    .then((output) => output[0].xargs((input) => $`echo ${input} world2`));
+  assertEquals(await result[0].text(), "hello world world2");
+});
+
+Deno.test("xargs multi-line", async () => {
+  const result = await $`echo "line1\nline2"`
+    .xargs((input) => $`echo ${input} world`);
+  assertEquals(await result[0].text(), "line1 world");
+  assertEquals(await result[1].text(), "line2 world");
 });
