@@ -1,7 +1,7 @@
 import { $, CommandBuilder, TextLineStream } from "./deps.ts";
 
-import { FilterFunction, MapFunction } from "./linestream/transformer.ts";
-import { LineStream, XargsFunction } from "./linestream/linestream.ts";
+import { FilterFunction, MapFunction } from "./LineStream/Transformer.ts";
+import { LineStream, XargsFunction } from "./LineStream/LineStream.ts";
 
 declare module "./deps.ts" {
   interface CommandBuilder {
