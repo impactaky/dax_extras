@@ -69,7 +69,7 @@ export class LineStream {
   }
 
   /**
-   * Reads the stream and returns an array of lines.
+   * Reads the entire stream and returns an array of lines.
    * @returns A promise that resolves to an array of lines.
    */
   async lines(): Promise<string[]> {
@@ -91,8 +91,8 @@ export class LineStream {
 
   /**
    * Pipes a command into the stdin of the next command in the chain.
-   * @param next - The command builder representing the next command.
-   * @returns The command builder with the stdin piped from the current stream.
+   * @param next - The CommandBuilder representing the next command.
+   * @returns The CommandBuilder with the stdin piped from the current stream.
    */
   pipe(next: CommandBuilder): CommandBuilder {
     const pipedStream = this.#stream.pipeThrough(new LineToByteStream());
@@ -102,7 +102,7 @@ export class LineStream {
   /**
    * Pipes a command into the stdin of the next command in the chain.
    * @param next - The command as a string to pipe into.
-   * @returns The command builder with the stdin piped from the current stream.
+   * @returns The CommandBuilder with the stdin piped from the current stream.
    */
   $(next: string): CommandBuilder {
     const pipedStream = this.#stream.pipeThrough(new LineToByteStream());
@@ -111,8 +111,6 @@ export class LineStream {
 
   /**
    * Maps the stream using a map function, allowing further processing.
-   * @param mapFunction - The function to map theoutput of each line.
-   *
    * @param mapFunction - The function to map the output of each line.
    * @returns A new line stream resulting from the mapping operation.
    */
@@ -132,7 +130,7 @@ export class LineStream {
   /**
    * Executes a command for each line of the stream using the provided xargs function.
    * @param command - The xargs function that handles the execution of command lines.
-   * @returns A promise that resolves to an array of command builders representing the executed commands.
+   * @returns A promise that resolves to an array of CommandBuilders representing the executed commands.
    */
   async xargs(command: XargsFunction): Promise<CommandBuilder[]> {
     const processes: CommandBuilder[] = [];
