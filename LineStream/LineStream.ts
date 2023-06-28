@@ -135,7 +135,7 @@ export class LineStream {
   async xargs(xargsFunction: XargsFunction): Promise<CommandBuilder[]> {
     const processes: CommandBuilder[] = [];
     for await (const line of this.#stream) {
-      processes.push(command(line));
+      processes.push(xargsFunction(line));
     }
     return processes;
   }
