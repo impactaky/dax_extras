@@ -1,8 +1,8 @@
 import { $, CommandBuilder } from "../deps.ts";
-import { addExtras, SUPPORTED_VERSION } from "../mod.ts";
+import { addExtras } from "../mod.ts";
 import { assertEquals } from "../test_deps.ts";
 
-addExtras(CommandBuilder, SUPPORTED_VERSION);
+addExtras(CommandBuilder, "0.32.0");
 
 Deno.test("LineStream.text", async () => {
   const text = await $`echo "line1\nline2"`
