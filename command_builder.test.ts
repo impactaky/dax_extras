@@ -1,5 +1,8 @@
-import $ from "./mod.ts";
 import { assertEquals } from "./test_deps.ts";
+import { $, CommandBuilder } from "./deps.ts";
+import { addExtras, SUPPORTED_VERSION } from "./mod.ts";
+
+addExtras(CommandBuilder, SUPPORTED_VERSION);
 
 Deno.test("Quick example", async () => {
   const stream = $`echo "abc\nabcde\nabcdef\nacddef\nbcdefg"`

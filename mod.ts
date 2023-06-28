@@ -1,4 +1,4 @@
-import { $, CommandBuilder, TextLineStream } from "./deps.ts";
+import { CommandBuilder, TextLineStream } from "./deps.ts";
 
 import { FilterFunction, MapFunction } from "./LineStream/Transformer.ts";
 import { LineStream, XargsFunction } from "./LineStream/LineStream.ts";
@@ -48,39 +48,49 @@ declare module "./deps.ts" {
   }
 }
 
-CommandBuilder.prototype.pipe = function (next: CommandBuilder) {
-  const p = this.stdout("piped").spawn();
-  return next.stdin(p.stdout());
-};
-
-CommandBuilder.prototype.$ = function (next: string) {
-  const p = this.stdout("piped").spawn();
-  return new CommandBuilder().command(next).stdin(p.stdout());
-};
-
-CommandBuilder.prototype.lineStream = function () {
-  return new LineStream(
-    this.stdout("piped").spawn().stdout().pipeThrough(new TextDecoderStream())
-      .pipeThrough(new TextLineStream()),
-  );
-};
-
-CommandBuilder.prototype.map = function (
-  mapFunction: MapFunction<string, string>,
+export const SUPPORTED_VERSION = "0.32.0";
+export function addExtras(
+  commandBuilder: typeof CommandBuilder,
+  version: string,
 ) {
-  return this.lineStream().map(mapFunction);
-};
+  if (version !== SUPPORTED_VERSION) {
+    throw new Error(
+      "dax version is unsuported, needs dax version: " +
+        SUPPORTED_VERSION,
+    );
+  }
+  commandBuilder.prototype.pipe = function (next: CommandBuilder) {
+    const p = this.stdout("piped").spawn();
+    return next.stdin(p.stdout());
+  };
 
-CommandBuilder.prototype.filter = function (
-  filterFunction: FilterFunction<string>,
-) {
-  return this.lineStream().filter(filterFunction);
-};
+  commandBuilder.prototype.$ = function (next: string) {
+    const p = this.stdout("piped").spawn();
+    return new CommandBuilder().command(next).stdin(p.stdout());
+  };
 
-CommandBuilder.prototype.xargs = function (
-  xargsFunction: XargsFunction,
-) {
-  return this.lineStream().xargs(xargsFunction);
-};
+  commandBuilder.prototype.lineStream = function () {
+    return new LineStream(
+      this.stdout("piped").spawn().stdout().pipeThrough(new TextDecoderStream())
+        .pipeThrough(new TextLineStream()),
+    );
+  };
 
-export default $;
+  commandBuilder.prototype.map = function (
+    mapFunction: MapFunction<string, string>,
+  ) {
+    return this.lineStream().map(mapFunction);
+  };
+
+  commandBuilder.prototype.filter = function (
+    filterFunction: FilterFunction<string>,
+  ) {
+    return this.lineStream().filter(filterFunction);
+  };
+
+  commandBuilder.prototype.xargs = function (
+    xargsFunction: XargsFunction,
+  ) {
+    return this.lineStream().xargs(xargsFunction);
+  };
+}
