@@ -5,29 +5,64 @@ import { LineStream, XargsFunction } from "./LineStream/LineStream.ts";
 
 declare module "./deps.ts" {
   interface CommandBuilder {
-    pipe(): ReadableStream<Uint8Array>;
-    lineStream(): LineStream;
+    /**
+     * Pipes the output of the current command into another command.
+     * @param next - The command to pipe into.
+     * @returns A new command builder representing the piped command.
+     */
+    pipe(next: CommandBuilder): CommandBuilder;
+
+    /**
+     * Pipes the output of the current command into another command.
+     * @param next - The command as a string to pipe into.
+     * @returns A new command builder representing the piped command.
+     */
     $(next: string): CommandBuilder;
+
+    /**
+     * Creates a new line stream for reading the output of the command.
+     * @returns The line stream.
+     */
+    lineStream(): LineStream;
+
+    /**
+     * Maps the output of a function that returns a line stream, allowing further processing.
+     * @param mapFunction - The function to map the output.
+     * @returns The line stream resulting from the mapping operation.
+     */
     map(mapFunction: MapFunction<string, string>): LineStream;
+
+    /**
+     * Filters the output of a function that returns a line stream, allowing further processing.
+     * @param filterFunction - The function to filter the output.
+     * @returns The line stream resulting from the filtering operation.
+     */
     filter(filterFunction: FilterFunction<string>): LineStream;
+
+    /**
+     * Builds and executes command lines using the standard input.
+     * @param xargsFunction - The function that handles the execution of command lines.
+     * @returns A promise that resolves to an array of command builders representing the executed commands.
+     */
     xargs(xargsFunction: XargsFunction): Promise<CommandBuilder[]>;
   }
 }
 
-CommandBuilder.prototype.pipe = function () {
-  return this.stdout("piped").spawn().stdout();
-};
-
-CommandBuilder.prototype.lineStream = function () {
-  return new LineStream(
-    this.pipe().pipeThrough(new TextDecoderStream())
-      .pipeThrough(new TextLineStream()),
-  );
+CommandBuilder.prototype.pipe = function (next: CommandBuilder) {
+  const p = this.stdout("piped").spawn();
+  return next.stdin(p.stdout());
 };
 
 CommandBuilder.prototype.$ = function (next: string) {
   const p = this.stdout("piped").spawn();
   return new CommandBuilder().command(next).stdin(p.stdout());
+};
+
+CommandBuilder.prototype.lineStream = function () {
+  return new LineStream(
+    this.stdout("piped").spawn().stdout().pipeThrough(new TextDecoderStream())
+      .pipeThrough(new TextLineStream()),
+  );
 };
 
 CommandBuilder.prototype.map = function (

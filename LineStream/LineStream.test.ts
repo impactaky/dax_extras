@@ -21,6 +21,14 @@ Deno.test("LineStream.$", async () => {
   assertEquals(text, ["line1", "line2"]);
 });
 
+Deno.test("LineStream.pipe", async () => {
+  const text = await $`echo "line1\nline2"`
+    .lineStream()
+    .pipe($`cat`)
+    .lines();
+  assertEquals(text, ["line1", "line2"]);
+});
+
 Deno.test("LineStream.map", async () => {
   const text = await $`echo "line1\nline2"`
     .lineStream()
