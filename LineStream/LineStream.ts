@@ -129,10 +129,10 @@ export class LineStream {
 
   /**
    * Executes a command for each line of the stream using the provided xargs function.
-   * @param command - The xargs function that handles the execution of command lines.
+   * @param xargsFunction - The xargs function that handles the execution of command lines.
    * @returns A promise that resolves to an array of CommandBuilders representing the executed commands.
    */
-  async xargs(command: XargsFunction): Promise<CommandBuilder[]> {
+  async xargs(xargsFunction: XargsFunction): Promise<CommandBuilder[]> {
     const processes: CommandBuilder[] = [];
     for await (const line of this.#stream) {
       processes.push(command(line));
