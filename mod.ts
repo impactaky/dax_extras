@@ -11,6 +11,7 @@ declare module "./deps.ts" {
      * @returns A new command builder representing the piped command.
      */
     pipe(next: CommandBuilder): CommandBuilder;
+
     /**
      * Pipes the output of the current command into another command.
      * @param next - The command as a string to pipe into.
@@ -18,7 +19,6 @@ declare module "./deps.ts" {
      */
     $(next: string): CommandBuilder;
 
-    // The next methods are re-exports of LineStream methods
     /**
      * Creates a new line stream for reading the output of the command.
      * @returns The line stream.
@@ -58,7 +58,6 @@ CommandBuilder.prototype.$ = function (next: string) {
   return new CommandBuilder().command(next).stdin(p.stdout());
 };
 
-// The next methods are re-exports of LineStream methods
 CommandBuilder.prototype.lineStream = function () {
   return new LineStream(
     this.stdout("piped").spawn().stdout().pipeThrough(new TextDecoderStream())
