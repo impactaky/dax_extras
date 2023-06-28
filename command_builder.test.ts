@@ -13,7 +13,8 @@ Deno.test("Quick example", async () => {
 });
 
 Deno.test("xargs one-line", async () => {
-  const result = await $`echo hello`
+  const result = await $`echo ignore`
+    .$(`echo hello`)
     .xargs((input) => $`echo ${input} world`)
     .then((output) => output[0].xargs((input) => $`echo ${input} world2`));
   assertEquals(await result[0].text(), "hello world world2");
