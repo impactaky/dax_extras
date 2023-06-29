@@ -13,8 +13,7 @@ Deno.test("Quick example", async () => {
 });
 
 Deno.test("xargs one-line", async () => {
-  const result = await $`echo ignore`
-    .$(`echo hello`)
+  const result = await $`echo hello`
     .xargs((input) => $`echo ${input} world`)
     .then((output) => output[0].xargs((input) => $`echo ${input} world2`));
   assertEquals(await result[0].text(), "hello world world2");
@@ -25,4 +24,13 @@ Deno.test("xargs multi-line", async () => {
     .xargs((input) => $`echo ${input} world`);
   assertEquals(await result[0].text(), "line1 world");
   assertEquals(await result[1].text(), "line2 world");
+});
+
+Deno.test("CommandBuilder.prototype.$", async () => {
+  assertEquals(
+    await $`echo a`
+      .$(`echo b`)
+      .text(),
+    "b",
+  );
 });
