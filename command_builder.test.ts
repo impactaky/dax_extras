@@ -25,3 +25,12 @@ Deno.test("xargs multi-line", async () => {
   assertEquals(await result[0].text(), "line1 world");
   assertEquals(await result[1].text(), "line2 world");
 });
+
+Deno.test("CommandBuilder.prototype.$", async () => {
+  assertEquals(
+    await $`echo a`
+      .$(`echo b`)
+      .text(),
+    "b",
+  );
+});
