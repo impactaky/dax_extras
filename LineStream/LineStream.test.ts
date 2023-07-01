@@ -64,3 +64,33 @@ Deno.test("LineStream.xargs multi-line", async () => {
   assertEquals(await result[0].text(), "line1 world");
   assertEquals(await result[1].text(), "line2 world");
 });
+
+Deno.test("LineStream.apply return string", async () => {
+  const result = await $`echo "prefix: val1\nprefix: val2\nprefix:\tval2"`
+    .lineStream()
+    .apply((l) => {
+      const val = l.split(/\s+/)[1];
+      if (val == "val2") {
+        return `result ${val}`;
+      }
+    })
+    .lines();
+  assertEquals(result.length, 2);
+  assertEquals(result[0], "result val2");
+  assertEquals(result[1], "result val2");
+});
+
+Deno.test("LineStream.apply return string[]", async () => {
+  const result = await $`echo "prefix: val1\nprefix: val2"`
+    .lineStream()
+    .apply((l) => {
+      const val = l.split(/\s+/)[1];
+      if (val == "val2") {
+        return [`result1 ${val}`, `result2 ${val}`];
+      }
+    })
+    .lines();
+  assertEquals(result.length, 2);
+  assertEquals(result[0], "result1 val2");
+  assertEquals(result[1], "result2 val2");
+});
