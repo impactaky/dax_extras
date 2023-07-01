@@ -147,7 +147,6 @@ export class LineStream {
    * as specified by the function. The function may return a transformed item, an array of transformed items, or `undefined`.
    * When a transformed item or an array of items is returned, it/they are enqueued to the output stream.
    * If `undefined` is returned, the item is ignored and not included in the output stream.
-   *
    * @param applyFunction - A function to be applied to each item in the stream.
    * This function takes an item of type `T`, and returns either a transformed item of type `U`,
    * `U[]`, or `undefined`.
