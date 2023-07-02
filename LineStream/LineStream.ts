@@ -8,8 +8,9 @@ import {
   MapFunction,
   MapStream,
 } from "./Transformer.ts";
+import { XargsStream } from "./XargsStream.ts";
 
-export type XargsFunction = (arg0: string) => CommandBuilder;
+export type XargsFunction = MapFunction<string, CommandBuilder>;
 
 class LineToByteStream extends TransformStream<string, Uint8Array> {
   #encoder: TextEncoder;
@@ -130,16 +131,14 @@ export class LineStream {
   }
 
   /**
-   * Executes a command for each line of the stream using the provided xargs function.
+   * Create a CommandBuilder for each line of the stream using the provided xargs function.
    * @param xargsFunction - The xargs function that handles the execution of command lines.
-   * @returns A promise that resolves to an array of CommandBuilders representing the executed commands.
+   * @returns A readable stream of CommandBuilder.
    */
-  async xargs(xargsFunction: XargsFunction): Promise<CommandBuilder[]> {
-    const processes: CommandBuilder[] = [];
-    for await (const line of this.#stream) {
-      processes.push(xargsFunction(line));
-    }
-    return processes;
+  xargs(xargsFunction: XargsFunction): XargsStream {
+    return new XargsStream(
+      this.#stream.pipeThrough(new MapStream(xargsFunction)),
+    );
   }
 
   /**
