@@ -50,6 +50,25 @@ export class XargsStream {
   }
 
   /**
+   * Pipes the output of the current command into another command.
+   * @param next - The command as a string to pipe into.
+   * @returns A new command builder representing the piped command.
+   */
+  $(next: string): CommandBuilder {
+    const pipedStream = this.#stream.pipeThrough(
+      toTransformStream(async function* (src) {
+        for await (const builder of src) {
+          const new_stream = builder.stdout("piped").spawn().stdout();
+          for await (const chunk of new_stream) {
+            yield chunk;
+          }
+        }
+      }),
+    );
+    return new CommandBuilder().command(next).stdin(pipedStream);
+  }
+
+  /**
    * Maps the output of a function that returns a line stream, allowing further processing.
    * @param mapFunction - The function to map the output.
    * @returns The line stream resulting from the mapping operation.
