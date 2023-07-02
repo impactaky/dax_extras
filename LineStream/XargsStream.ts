@@ -31,21 +31,29 @@ export class XargsStream {
   }
 
   /**
+   * Creates a new byte stream for reading the output of the xargs.
+   * @returns The byte stream.
+   */
+  byteStream(): ReadableStream<Uint8Array> {
+    return this.#stream.pipeThrough(toTransformStream(async function* (src) {
+      for await (const builder of src) {
+        const new_stream = builder.stdout("piped").spawn().stdout();
+        for await (const line of new_stream) {
+          yield line;
+        }
+      }
+    }));
+  }
+
+  /**
    * Creates a new line stream for reading the output of the xargs.
    * @returns The line stream.
    */
   lineStream(): LineStream {
     return new LineStream(
-      this.#stream.pipeThrough(toTransformStream(async function* (src) {
-        for await (const builder of src) {
-          const new_stream = builder.stdout("piped").spawn().stdout()
-            .pipeThrough(new TextDecoderStream())
-            .pipeThrough(new TextLineStream());
-          for await (const line of new_stream) {
-            yield line;
-          }
-        }
-      })),
+      this.byteStream()
+        .pipeThrough(new TextDecoderStream())
+        .pipeThrough(new TextLineStream()),
     );
   }
 
@@ -55,16 +63,7 @@ export class XargsStream {
    * @returns A new command builder representing the piped command.
    */
   $(next: string): CommandBuilder {
-    const pipedStream = this.#stream.pipeThrough(
-      toTransformStream(async function* (src) {
-        for await (const builder of src) {
-          const new_stream = builder.stdout("piped").spawn().stdout();
-          for await (const chunk of new_stream) {
-            yield chunk;
-          }
-        }
-      }),
-    );
+    const pipedStream = this.byteStream();
     return new CommandBuilder().command(next).stdin(pipedStream);
   }
 
