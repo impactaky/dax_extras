@@ -66,6 +66,15 @@ Deno.test("LineStream.xargs multi-line", async () => {
   assertEquals(result, ["line1 world", "line2 world"]);
 });
 
+Deno.test("LineStream.xargs.$", async () => {
+  const result = await $`echo "line1\nline2"`
+    .lineStream()
+    .xargs((input) => $`echo ${input} world`)
+    .$(`cat`)
+    .lines();
+  assertEquals(result, ["line1 world", "line2 world"]);
+});
+
 Deno.test("LineStream.apply return string", async () => {
   const result = await $`echo "prefix: val1\nprefix: val2\nprefix:\tval2"`
     .lineStream()
