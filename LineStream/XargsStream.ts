@@ -30,6 +30,7 @@ export class XargsStream
       const ret: CommandResult[] = [];
       for await (const builder of this.#stream) {
         // typescript bug: builder is CommandBuilder not CommandResult
+        // https://github.com/microsoft/TypeScript/issues/47593
         ret.push(await (builder as unknown as CommandBuilder));
       }
       return ret;
