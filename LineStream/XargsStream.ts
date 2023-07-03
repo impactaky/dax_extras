@@ -10,8 +10,10 @@ import {
   FilterFunction,
   MapFunction,
 } from "../LineStream/Transformer.ts";
+import { StreamInterface } from "./Stream.ts";
 
-export class XargsStream implements PromiseLike<CommandResult[]> {
+export class XargsStream
+  implements StreamInterface, PromiseLike<CommandResult[]> {
   #stream: ReadableStream<CommandBuilder>;
 
   then<TResult1 = CommandResult[], TResult2 = never>(
@@ -27,7 +29,8 @@ export class XargsStream implements PromiseLike<CommandResult[]> {
     const promise = (async () => {
       const ret: CommandResult[] = [];
       for await (const builder of this.#stream) {
-        ret.push(await builder);
+        // typescript bug: builder is CommandBuilder not CommandResult
+        ret.push(await (builder as unknown as CommandBuilder));
       }
       return ret;
     })();
@@ -56,6 +59,22 @@ export class XargsStream implements PromiseLike<CommandResult[]> {
   }
 
   /**
+   * Reads the entire stream and returns the concatenated text.
+   * @returns A promise that resolves to the concatenated text.
+   */
+  text() {
+    return this.lineStream().text();
+  }
+
+  /**
+   * Reads the entire stream and returns an array of lines.
+   * @returns A promise that resolves to an array of lines.
+   */
+  lines() {
+    return this.lineStream().lines();
+  }
+
+  /**
    * Creates a new byte stream for reading the output of the xargs.
    * @returns The byte stream.
    */
@@ -71,15 +90,13 @@ export class XargsStream implements PromiseLike<CommandResult[]> {
   }
 
   /**
-   * Creates a new line stream for reading the output of the xargs.
-   * @returns The line stream.
+   * Pipes the output of the current command into another command.
+   * @param next - The CommandBuilder representing the next command.
+   * @returns A new command builder representing the piped command.
    */
-  lineStream(): LineStream {
-    return new LineStream(
-      this.byteStream()
-        .pipeThrough(new TextDecoderStream())
-        .pipeThrough(new TextLineStream()),
-    );
+  pipe(next: CommandBuilder): CommandBuilder {
+    const pipedStream = this.byteStream();
+    return next.stdin(pipedStream);
   }
 
   /**
@@ -90,6 +107,18 @@ export class XargsStream implements PromiseLike<CommandResult[]> {
   $(next: string): CommandBuilder {
     const pipedStream = this.byteStream();
     return new CommandBuilder().command(next).stdin(pipedStream);
+  }
+
+  /**
+   * Creates a new line stream for reading the output of the xargs.
+   * @returns The line stream.
+   */
+  lineStream(): LineStream {
+    return new LineStream(
+      this.byteStream()
+        .pipeThrough(new TextDecoderStream())
+        .pipeThrough(new TextLineStream()),
+    );
   }
 
   /**
@@ -139,21 +168,5 @@ export class XargsStream implements PromiseLike<CommandResult[]> {
     applyFunction: ApplyFunction<string, string>,
   ) {
     return this.lineStream().apply(applyFunction);
-  }
-
-  /**
-   * Reads the entire stream and returns the concatenated text.
-   * @returns A promise that resolves to the concatenated text.
-   */
-  text() {
-    return this.lineStream().text();
-  }
-
-  /**
-   * Reads the entire stream and returns an array of lines.
-   * @returns A promise that resolves to an array of lines.
-   */
-  lines() {
-    return this.lineStream().lines();
   }
 }

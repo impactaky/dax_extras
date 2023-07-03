@@ -1,4 +1,5 @@
 import { CommandBuilder } from "../deps.ts";
+import { StreamInterface } from "./Stream.ts";
 
 import {
   ApplyFunction,
@@ -35,7 +36,7 @@ class LineToByteStream extends TransformStream<string, Uint8Array> {
  * Represents a stream of lines for reading the output of a command.
  * It implements an async iterator, allowing iteration over the lines.
  */
-export class LineStream {
+export class LineStream implements StreamInterface {
   #stream: ReadableStream;
 
   /**

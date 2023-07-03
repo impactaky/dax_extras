@@ -67,9 +67,10 @@ Deno.test("LineStream.xargs one-line", async () => {
 });
 
 Deno.test("LineStream.xargs multi-line", async () => {
-  const result = await $`echo "line1\nline2"`
+  const result = await $`echo "line1\nline2\nline3"`
     .lineStream()
     .xargs((input) => $`echo ${input} world`)
+    .pipe($`grep -v 3`)
     .lines();
   assertEquals(result, ["line1 world", "line2 world"]);
 });
