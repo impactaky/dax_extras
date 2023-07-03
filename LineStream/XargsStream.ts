@@ -1,4 +1,9 @@
-import { CommandBuilder, TextLineStream, toTransformStream } from "../deps.ts";
+import {
+  CommandBuilder,
+  CommandResult,
+  TextLineStream,
+  toTransformStream,
+} from "../deps.ts";
 import { LineStream, XargsFunction } from "./LineStream.ts";
 import {
   ApplyFunction,
@@ -6,8 +11,28 @@ import {
   MapFunction,
 } from "../LineStream/Transformer.ts";
 
-export class XargsStream {
+export class XargsStream implements PromiseLike<CommandResult[]> {
   #stream: ReadableStream<CommandBuilder>;
+
+  then<TResult1 = CommandResult[], TResult2 = never>(
+    onfulfilled?:
+      | ((value: CommandResult[]) => TResult1 | PromiseLike<TResult1>)
+      | null
+      | undefined,
+    onrejected?:
+      | ((reason: Error) => TResult2 | PromiseLike<TResult2>)
+      | null
+      | undefined,
+  ): PromiseLike<TResult1 | TResult2> {
+    const promise = (async () => {
+      const ret: CommandResult[] = [];
+      for await (const builder of this.#stream) {
+        ret.push(await builder);
+      }
+      return ret;
+    })();
+    return promise.then(onfulfilled, onrejected);
+  }
 
   /**
    * Constructs a new `XargsStream` with the provided readable stream.

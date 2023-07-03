@@ -1,5 +1,6 @@
 import $ from "../mod.ts";
 import { assertEquals } from "../test_deps.ts";
+import { CommandResult } from "../deps.ts";
 
 Deno.test("LineStream.text", async () => {
   const text = await $`echo "line1\nline2"`
@@ -47,6 +48,13 @@ Deno.test("LineStream.filter", async () => {
     })
     .lines();
   assertEquals(text, ["4444"]);
+});
+
+Deno.test("await LineStream.xargs", async () => {
+  const result = await $`echo "line1\nline2"`
+    .xargs((input) => $`echo ${input}`);
+  assertEquals(result.length, 2);
+  assertEquals(result[0] instanceof CommandResult, true);
 });
 
 Deno.test("LineStream.xargs one-line", async () => {
