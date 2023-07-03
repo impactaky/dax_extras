@@ -119,6 +119,10 @@ export class LineStream implements StreamInterface {
     return new CommandBuilder().command(next).stdin(this.byteStream());
   }
 
+  lineStream(): LineStream {
+    return this;
+  }
+
   /**
    * Maps the stream using a map function, allowing further processing.
    * @param mapFunction - The function to map the output of each line.
