@@ -4,11 +4,31 @@ import { ApplyFunction, FilterFunction, MapFunction } from "./Transformer.ts";
 import { XargsStream } from "./XargsStream.ts";
 
 export interface StreamInterface {
+  /**
+   * Async iterator implementation for iterating over the lines of the stream.
+   * @returns An async iterator for iterating over the lines of the stream.
+   */
   [Symbol.asyncIterator](): AsyncGenerator;
+
+  /**
+   * Reads the entire stream and returns the concatenated text.
+   * @returns A promise that resolves to the concatenated text.
+   */
   text(): Promise<string>;
+
+  /**
+   * Reads the entire stream and returns an array of lines.
+   * @returns A promise that resolves to an array of lines.
+   */
   lines(): Promise<string[]>;
+
   // TODO: should this be added ?
   // pipeThrough(transform: TransformStream): LineStreamInterface;
+
+  /**
+   * Get stream as Uint8Array
+   * @returns The encoded stream.
+   */
   byteStream(): ReadableStream<Uint8Array>;
 
   /**
