@@ -97,7 +97,7 @@ export class LineStream {
    * @returns The encoded stream.
    */
   byteStream(): ReadableStream<Uint8Array> {
-      return this.#stream.pipeThrough(new LineToByteStream());
+    return this.#stream.pipeThrough(new LineToByteStream());
   }
 
   /**
