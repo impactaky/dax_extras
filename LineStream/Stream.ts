@@ -11,6 +11,7 @@ export interface StreamInterface {
   // pipeThrough(transform: TransformStream): LineStreamInterface;
   byteStream(): ReadableStream<Uint8Array>;
 
+
   /**
    * Pipes the output of the current command into another command.
    * @param next - The command to pipe into.
