@@ -93,13 +93,20 @@ export class LineStream {
   }
 
   /**
+   * Get stream as Uint8Array
+   * @returns The encoded stream.
+   */
+  byteStream(): ReadableStream<Uint8Array> {
+    return this.#stream.pipeThrough(new LineToByteStream());
+  }
+
+  /**
    * Pipes a command into the stdin of the next command in the chain.
    * @param next - The CommandBuilder representing the next command.
    * @returns The CommandBuilder with the stdin piped from the current stream.
    */
   pipe(next: CommandBuilder): CommandBuilder {
-    const pipedStream = this.#stream.pipeThrough(new LineToByteStream());
-    return next.stdin(pipedStream);
+    return next.stdin(this.byteStream());
   }
 
   /**
@@ -108,8 +115,7 @@ export class LineStream {
    * @returns The CommandBuilder with the stdin piped from the current stream.
    */
   $(next: string): CommandBuilder {
-    const pipedStream = this.#stream.pipeThrough(new LineToByteStream());
-    return new CommandBuilder().command(next).stdin(pipedStream);
+    return new CommandBuilder().command(next).stdin(this.byteStream());
   }
 
   /**
