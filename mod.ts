@@ -6,6 +6,7 @@ import {
   MapFunction,
 } from "./LineStream/Transformer.ts";
 import { LineStream, XargsFunction } from "./LineStream/LineStream.ts";
+import { XargsStream } from "./LineStream/XargsStream.ts";
 
 declare module "./deps.ts" {
   interface CommandBuilder {
@@ -48,7 +49,7 @@ declare module "./deps.ts" {
      * @param xargsFunction - The function that handles the execution of command lines.
      * @returns A promise that resolves to an array of command builders representing the executed commands.
      */
-    xargs(xargsFunction: XargsFunction): Promise<CommandBuilder[]>;
+    xargs(xargsFunction: XargsFunction): XargsStream;
 
     /**
      * Applies a given function to the stream, transforming each item of the stream

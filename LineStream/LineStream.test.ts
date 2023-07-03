@@ -1,5 +1,6 @@
 import $ from "../mod.ts";
 import { assertEquals } from "../test_deps.ts";
+import { CommandResult } from "../deps.ts";
 
 Deno.test("LineStream.text", async () => {
   const text = await $`echo "line1\nline2"`
@@ -49,20 +50,37 @@ Deno.test("LineStream.filter", async () => {
   assertEquals(text, ["4444"]);
 });
 
+Deno.test("await LineStream.xargs", async () => {
+  const result = await $`echo "line1\nline2"`
+    .xargs((input) => $`echo ${input}`);
+  assertEquals(result.length, 2);
+  assertEquals(result[0] instanceof CommandResult, true);
+});
+
 Deno.test("LineStream.xargs one-line", async () => {
   const result = await $`echo hello`
     .lineStream()
     .xargs((input) => $`echo ${input} world`)
-    .then((output) => output[0].xargs((input) => $`echo ${input} world2`));
-  assertEquals(await result[0].text(), "hello world world2");
+    .xargs((input) => $`echo ${input} world2`)
+    .lines();
+  assertEquals(result, ["hello world world2"]);
 });
 
 Deno.test("LineStream.xargs multi-line", async () => {
   const result = await $`echo "line1\nline2"`
     .lineStream()
-    .xargs((input) => $`echo ${input} world`);
-  assertEquals(await result[0].text(), "line1 world");
-  assertEquals(await result[1].text(), "line2 world");
+    .xargs((input) => $`echo ${input} world`)
+    .lines();
+  assertEquals(result, ["line1 world", "line2 world"]);
+});
+
+Deno.test("LineStream.xargs.$", async () => {
+  const result = await $`echo "line1\nline2"`
+    .lineStream()
+    .xargs((input) => $`echo ${input} world`)
+    .$(`cat`)
+    .lines();
+  assertEquals(result, ["line1 world", "line2 world"]);
 });
 
 Deno.test("LineStream.apply return string", async () => {
