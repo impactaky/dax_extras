@@ -35,5 +35,14 @@ jobs:
         run: deno lint
 
       - name: Run tests
-        run: deno test -A
-    
+        run: deno test -A --coverage=.coverage
+
+      - name: Create coverage report
+        if: runner.os == 'Linux'
+        run: deno coverage ./.coverage --lcov > coverage.lcov
+
+      - name: Collect coverage
+        if: runner.os == 'Linux'
+        uses: codecov/codecov-action@v1.0.10
+        with:
+          file: ./coverage.lcov
