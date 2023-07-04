@@ -2,7 +2,6 @@ import $ from "../mod.ts";
 import { assertEquals } from "../test_deps.ts";
 
 Deno.test("XargsStream async iterator", async () => {
-  // TODO: should xargs make stdout piped automaticly
   const cmd = $`echo "1\n2"`.xargs((i) => $`echo ${i}${i}`.stdout("piped"));
   const result = [];
   for await (const r of cmd) {
