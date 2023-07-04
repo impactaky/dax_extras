@@ -22,3 +22,19 @@ Deno.test("CommandBuilder.prototype.$", async () => {
     "b",
   );
 });
+
+Deno.test("commandBuilder smoke test", async () => {
+  // TODO: can't reuse the same cmd, probably because pipe hooks stdin of the processes
+  // can this be improved ?
+  const cmd = $`echo 1`.pipe($`echo "2\n3"`);
+  const cmd2 = $`echo 1`.pipe($`echo "2\n3"`);
+
+  assertEquals(
+    await cmd.map((l) => l + "0").text(),
+    "20\n30\n",
+  );
+  assertEquals(
+    await cmd2.filter((l) => l != "3").text(),
+    "2\n",
+  );
+});
