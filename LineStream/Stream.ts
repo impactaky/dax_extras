@@ -22,8 +22,12 @@ export interface StreamInterface {
    */
   lines(): Promise<string[]>;
 
-  // TODO: should this be added ?
-  // pipeThrough(transform: TransformStream): LineStreamInterface;
+  /**
+   * Pipes the stream through a transform stream.
+   * @param transform - The transform stream to pipe the line stream through.
+   * @returns A new line stream representing the piped stream.
+   */
+  pipeThrough(transform: TransformStream): LineStream;
 
   /**
    * Get stream as Uint8Array
