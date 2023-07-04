@@ -22,3 +22,16 @@ Deno.test("CommandBuilder.prototype.$", async () => {
     "b",
   );
 });
+
+Deno.test("commandBuilder smoke test", async () => {
+  const cmd = () => $`echo 1`.pipe($`echo "2\n3"`);
+
+  assertEquals(
+    await cmd().map((l) => l + "0").text(),
+    "20\n30\n",
+  );
+  assertEquals(
+    await cmd().filter((l) => l != "3").text(),
+    "2\n",
+  );
+});

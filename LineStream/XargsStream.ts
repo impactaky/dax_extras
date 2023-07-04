@@ -63,6 +63,10 @@ export class XargsStream
     return this.lineStream().lines();
   }
 
+  pipeThrough(transform: TransformStream): LineStream {
+    return this.lineStream().pipeThrough(transform);
+  }
+
   byteStream(): ReadableStream<Uint8Array> {
     return this.#stream.pipeThrough(toTransformStream(async function* (src) {
       for await (const builder of src) {
