@@ -30,5 +30,7 @@ You can import dax_extras like this.
 
 ```typescript
 import $ from "https://deno.land/x/dax@0.32.0/mod.ts";
-import "https://raw.githubusercontent.com/impactaky/dax_extras/1.0.0/mod.ts";
+// the dax version used internally by dax extras is at the suffix
+// it **must** match the dax version used
+import "https://deno.land/x/dax_extras@2.2.0-0.32.0/mod.ts";
 ```
