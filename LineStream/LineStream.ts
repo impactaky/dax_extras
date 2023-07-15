@@ -1,4 +1,4 @@
-import { CommandBuilder } from "../deps.ts";
+import { CommandBuilder, PathRef } from "../deps.ts";
 import { StreamInterface } from "./Stream.ts";
 
 import {
@@ -70,6 +70,14 @@ export class LineStream implements StreamInterface {
       lines.push(line);
     }
     return lines;
+  }
+
+  async toFile(path: PathRef): Promise<void> {
+    const file = await path.open({ write: true });
+    for await (const line of this.#stream) {
+      file.writeTextSync(line + "\n");
+    }
+    file.close();
   }
 
   pipeThrough(transform: TransformStream): LineStream {

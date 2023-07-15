@@ -1,4 +1,4 @@
-import { CommandBuilder } from "../deps.ts";
+import { CommandBuilder, PathRef } from "../deps.ts";
 import { LineStream, XargsFunction } from "./LineStream.ts";
 import { ApplyFunction, FilterFunction, MapFunction } from "./Transformer.ts";
 import { XargsStream } from "./XargsStream.ts";
@@ -87,4 +87,11 @@ export interface StreamInterface {
    * @returns A new `ReadableStream` instance that will contain the transformed items.
    */
   apply(applyFunction: ApplyFunction<string, string>): LineStream;
+
+  /**
+   * Writes data from a stream to a file asynchronously.
+   * @param path - The path reference object where the file will be written to.
+   * @returns Returns a promise which resolves when the operation completes.
+   */
+  toFile(path: PathRef): Promise<void>;
 }

@@ -1,6 +1,7 @@
 import {
   CommandBuilder,
   CommandResult,
+  PathRef,
   TextLineStream,
   toTransformStream,
 } from "../deps.ts";
@@ -61,6 +62,15 @@ export class XargsStream
 
   lines() {
     return this.lineStream().lines();
+  }
+
+  async toFile(path: PathRef) {
+    const pipedStream = this.byteStream();
+    const file = await path.open({ write: true });
+    for await (const bytes of pipedStream) {
+      file.writeSync(bytes);
+    }
+    file.close();
   }
 
   pipeThrough(transform: TransformStream): LineStream {

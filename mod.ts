@@ -1,4 +1,4 @@
-import { $, CommandBuilder, TextLineStream } from "./deps.ts";
+import { $, CommandBuilder, PathRef, TextLineStream } from "./deps.ts";
 
 import {
   ApplyFunction,
@@ -12,6 +12,10 @@ declare module "./deps.ts" {
   // deno-lint-ignore no-empty-interface
   interface CommandBuilder extends StreamInterface {}
 }
+
+CommandBuilder.prototype.toFile = async function (path: PathRef) {
+  path.writeSync(await this.bytes());
+};
 
 CommandBuilder.prototype.pipe = function (next: CommandBuilder) {
   const p = this.stdout("piped").spawn();
