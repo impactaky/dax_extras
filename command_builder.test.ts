@@ -14,6 +14,15 @@ Deno.test("Quick example", async () => {
   assertEquals(lines, ["hello!", "world!"]);
 });
 
+Deno.test("CommandBuilder.prototype.toFile", async () => {
+  const path = $.path(await Deno.makeTempFile());
+  path.writeText("foo");
+  await $`echo "line1\nline2"`.toFile(path);
+  const text = path.readTextSync();
+  console.log(text);
+  assertEquals(text, "line1\nline2\n");
+});
+
 Deno.test("CommandBuilder.prototype.$", async () => {
   assertEquals(
     await $`echo a`

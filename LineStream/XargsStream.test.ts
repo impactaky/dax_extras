@@ -18,6 +18,16 @@ Deno.test("XargsStream.text", async () => {
   );
 });
 
+Deno.test("XargsStream.text", async () => {
+  const path = $.path(await Deno.makeTempFile());
+  path.writeText("foo");
+  await $`echo "1\n2"`.xargs((i) => $`echo ${i}${i}`.stdout("piped")).toFile(
+    path,
+  );
+  const text = path.readTextSync();
+  assertEquals(text, "11\n22\n");
+});
+
 Deno.test("XargsStream.pipeThrough", async () => {
   assertEquals(
     await $`echo "1\n2"`.xargs((i) => $`echo ${i}${i}`.stdout("piped"))
