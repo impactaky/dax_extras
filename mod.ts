@@ -14,7 +14,7 @@ declare module "./deps.ts" {
 }
 
 CommandBuilder.prototype.toFile = async function (path: PathRef) {
-  path.writeSync(await this.bytes());
+  await path.write(await this.bytes());
 };
 
 CommandBuilder.prototype.pipe = function (next: CommandBuilder) {

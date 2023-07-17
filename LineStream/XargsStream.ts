@@ -68,7 +68,7 @@ export class XargsStream
     const pipedStream = this.byteStream();
     const file = await path.open({ write: true });
     for await (const bytes of pipedStream) {
-      file.writeSync(bytes);
+      await file.write(bytes);
     }
     file.close();
   }

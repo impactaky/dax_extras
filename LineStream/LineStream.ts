@@ -75,7 +75,7 @@ export class LineStream implements StreamInterface {
   async toFile(path: PathRef): Promise<void> {
     const file = await path.open({ write: true });
     for await (const line of this.#stream) {
-      file.writeTextSync(line + "\n");
+      await file.writeText(line + "\n");
     }
     file.close();
   }
