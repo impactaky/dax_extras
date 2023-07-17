@@ -16,11 +16,10 @@ Deno.test("LineStram.lines", async () => {
 
 Deno.test("LineStream.toFile", async () => {
   const path = $.path(await Deno.makeTempFile());
-  path.writeText("foo");
+  await path.writeText("foo");
   await $`echo "line1\nline2"`
     .lineStream().toFile(path);
   const text = path.readTextSync();
-  console.log(text);
   assertEquals(text, "line1\nline2\n");
 });
 
