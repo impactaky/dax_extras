@@ -16,7 +16,7 @@ Deno.test("Quick example", async () => {
 
 Deno.test("CommandBuilder.prototype.toFile", async () => {
   const path = $.path(await Deno.makeTempFile());
-  path.writeText("foo");
+  await path.writeText("foo");
   await $`echo "line1\nline2"`.toFile(path);
   const text = path.readTextSync();
   console.log(text);
