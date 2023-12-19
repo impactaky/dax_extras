@@ -38,24 +38,24 @@ export class FilterStream<T> extends TransformStream<T, T> {
   }
 }
 
-export type ApplyFunction<T, U> = (arg0: T) => U | U[] | undefined;
+export type ApplyFunction<T, U> = (
+  arg0: T,
+) => Promise<U | U[] | undefined> | U | U[] | undefined;
 
 export class ApplyStream<T, U> extends TransformStream<T, U> {
   constructor(private applyFunction: ApplyFunction<T, U>) {
     super({
-      transform: (chunk, controller) => this.#handle(chunk, controller),
+      transform: async (chunk, controller) => {
+        const applied = await Promise.resolve(this.applyFunction(chunk));
+        if (applied == undefined) {
+          return;
+        }
+        if (Array.isArray(applied)) {
+          applied.forEach((item) => controller.enqueue(item));
+        } else {
+          controller.enqueue(applied);
+        }
+      },
     });
-  }
-
-  #handle(chunk: T, controller: TransformStreamDefaultController<U>) {
-    const applied = this.applyFunction(chunk);
-    if (applied == undefined) {
-      return;
-    }
-    if (Array.isArray(applied)) {
-      applied.forEach((item) => controller.enqueue(item));
-    } else {
-      controller.enqueue(applied);
-    }
   }
 }
