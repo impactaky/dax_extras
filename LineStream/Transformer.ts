@@ -3,7 +3,7 @@ export type RawMapFunction<T, U> = (arg0: T) => U;
 export class RawMapStream<T, U> extends TransformStream<T, U> {
   constructor(private mapFunction: RawMapFunction<T, U>) {
     super({
-      transform: async (chunk, controller) => {
+      transform: (chunk, controller) => {
         controller.enqueue(this.mapFunction(chunk));
       },
     });
@@ -18,18 +18,6 @@ export class MapStream<T, U> extends TransformStream<T, U> {
       transform: async (chunk, controller) => {
         const result = await this.mapFunction(chunk);
         controller.enqueue(result);
-      },
-    });
-  }
-}
-
-export class MapAsyncStream<T, U> extends TransformStream<T, U> {
-  constructor(private mapFunction: MapFunction<T, U>) {
-    super({
-      transform: async (chunk, controller) => {
-        Promise.resolve(this.mapFunction(chunk)).then((result) => {
-          controller.enqueue(result);
-        });
       },
     });
   }
