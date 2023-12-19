@@ -8,6 +8,7 @@ import {
   FilterStream,
   MapFunction,
   MapStream,
+  RawMapStream,
 } from "./Transformer.ts";
 import { XargsStream } from "./XargsStream.ts";
 
@@ -105,12 +106,14 @@ export class LineStream implements StreamInterface {
   }
 
   filter(filterFunction: FilterFunction<string>): LineStream {
-    return this.pipeThrough(new FilterStream(filterFunction));
+    return this.pipeThrough(
+      new FilterStream(filterFunction),
+    );
   }
 
   xargs(xargsFunction: XargsFunction): XargsStream {
     return new XargsStream(
-      this.#stream.pipeThrough(new MapStream(xargsFunction)),
+      this.#stream.pipeThrough(new RawMapStream(xargsFunction)),
     );
   }
 

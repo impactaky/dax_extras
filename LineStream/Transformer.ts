@@ -1,30 +1,52 @@
-export type MapFunction<T, U> = (arg0: T) => U;
+export type RawMapFunction<T, U> = (arg0: T) => U;
+
+export class RawMapStream<T, U> extends TransformStream<T, U> {
+  constructor(private mapFunction: RawMapFunction<T, U>) {
+    super({
+      transform: async (chunk, controller) => {
+        controller.enqueue(this.mapFunction(chunk));
+      },
+    });
+  }
+}
+
+export type MapFunction<T, U> = (arg0: T) => Promise<U> | U;
 
 export class MapStream<T, U> extends TransformStream<T, U> {
   constructor(private mapFunction: MapFunction<T, U>) {
     super({
-      transform: (chunk, controller) => this.#handle(chunk, controller),
+      transform: async (chunk, controller) => {
+        const result = await this.mapFunction(chunk);
+        controller.enqueue(result);
+      },
     });
-  }
-
-  #handle(chunk: T, controller: TransformStreamDefaultController<U>) {
-    controller.enqueue(this.mapFunction(chunk));
   }
 }
 
-export type FilterFunction<T> = (arg0: T) => boolean;
+export class MapAsyncStream<T, U> extends TransformStream<T, U> {
+  constructor(private mapFunction: MapFunction<T, U>) {
+    super({
+      transform: async (chunk, controller) => {
+        Promise.resolve(this.mapFunction(chunk)).then((result) => {
+          controller.enqueue(result);
+        });
+      },
+    });
+  }
+}
+
+export type FilterFunction<T> = (arg0: T) => Promise<boolean> | boolean;
 
 export class FilterStream<T> extends TransformStream<T, T> {
   constructor(private filterFunction: FilterFunction<T>) {
     super({
-      transform: (chunk, controller) => this.#handle(chunk, controller),
+      transform: async (chunk, controller) => {
+        const result = await this.filterFunction(chunk);
+        if (result) {
+          controller.enqueue(chunk);
+        }
+      },
     });
-  }
-
-  #handle(chunk: T, controller: TransformStreamDefaultController<T>) {
-    if (this.filterFunction(chunk)) {
-      controller.enqueue(chunk);
-    }
   }
 }
 
