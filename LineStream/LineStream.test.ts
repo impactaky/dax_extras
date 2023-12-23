@@ -123,6 +123,19 @@ Deno.test("LineStream.apply return string[]", async () => {
   assertEquals(result[1], "result2 val2");
 });
 
+Deno.test("LineStream.forEach", async () => {
+  const result = await $`echo "prefix: val1\nprefix: val2"`
+    .forEach((l) => {
+      const val = l.split(/\s+/)[1];
+      if (val == "val2") {
+        return [`${val}`, `${val}`];
+      }
+    });
+  assertEquals(result.length, 2);
+  assertEquals(result[0], undefined);
+  assertEquals(result[1], ["val2", "val2"]);
+});
+
 Deno.test("LineStream async iterator", async () => {
   const result = $`echo "prefix: val1\nprefix: val2"`
     .lineStream()

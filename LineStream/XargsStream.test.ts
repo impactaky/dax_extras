@@ -61,3 +61,11 @@ Deno.test("XargsStream.apply", async () => {
     "110\n",
   );
 });
+
+Deno.test("XargsStream.forEach", async () => {
+  assertEquals(
+    await $`echo "1\n2"`.xargs((i) => $`echo ${i}${i}`.stdout("piped"))
+      .forEach((l) => !l.includes("2") ? l + "0" : undefined),
+    ["110", undefined],
+  );
+});

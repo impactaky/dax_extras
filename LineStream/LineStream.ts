@@ -8,6 +8,7 @@ import {
   FilterStream,
   MapFunction,
   MapStream,
+  RawMapFunction,
   RawMapStream,
 } from "./Transformer.ts";
 import { XargsStream } from "./XargsStream.ts";
@@ -119,5 +120,13 @@ export class LineStream implements StreamInterface {
 
   apply(applyFunction: ApplyFunction<string, string>) {
     return this.pipeThrough(new ApplyStream(applyFunction));
+  }
+
+  async forEach<T>(callback: RawMapFunction<string, T>) {
+    const promises: Promise<T>[] = [];
+    for await (const line of this) {
+      promises.push(Promise.resolve(callback(line)));
+    }
+    return Promise.all(promises);
   }
 }
