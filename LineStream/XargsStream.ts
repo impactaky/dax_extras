@@ -131,7 +131,7 @@ export class XargsStream
     return this.lineStream().apply(applyFunction);
   }
 
-  async forEach<T>(
+  forEach<T>(
     callback: RawMapFunction<string, T>,
   ) {
     return this.lineStream().forEach(callback);

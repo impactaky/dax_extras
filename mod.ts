@@ -59,7 +59,7 @@ CommandBuilder.prototype.apply = function (
   return this.lineStream().apply(applyFunction);
 };
 
-CommandBuilder.prototype.forEach = async function <T>(
+CommandBuilder.prototype.forEach = function <T>(
   callback: RawMapFunction<string, T>,
 ) {
   return this.lineStream().forEach(callback);
