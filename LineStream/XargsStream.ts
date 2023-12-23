@@ -10,6 +10,7 @@ import {
   ApplyFunction,
   FilterFunction,
   MapFunction,
+  RawMapFunction,
 } from "../LineStream/Transformer.ts";
 import { StreamInterface } from "./Stream.ts";
 
@@ -128,5 +129,11 @@ export class XargsStream
     applyFunction: ApplyFunction<string, string>,
   ) {
     return this.lineStream().apply(applyFunction);
+  }
+
+  forEach<T>(
+    callback: RawMapFunction<string, T>,
+  ) {
+    return this.lineStream().forEach(callback);
   }
 }

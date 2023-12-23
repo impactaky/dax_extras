@@ -4,6 +4,7 @@ import {
   ApplyFunction,
   FilterFunction,
   MapFunction,
+  RawMapFunction,
 } from "./LineStream/Transformer.ts";
 import { LineStream, XargsFunction } from "./LineStream/LineStream.ts";
 import { StreamInterface } from "./LineStream/Stream.ts";
@@ -56,6 +57,12 @@ CommandBuilder.prototype.apply = function (
   applyFunction: ApplyFunction<string, string>,
 ) {
   return this.lineStream().apply(applyFunction);
+};
+
+CommandBuilder.prototype.forEach = function <T>(
+  callback: RawMapFunction<string, T>,
+) {
+  return this.lineStream().forEach(callback);
 };
 
 export default $;

@@ -1,6 +1,11 @@
 import { CommandBuilder, PathRef } from "../deps.ts";
 import { LineStream, XargsFunction } from "./LineStream.ts";
-import { ApplyFunction, FilterFunction, MapFunction } from "./Transformer.ts";
+import {
+  ApplyFunction,
+  FilterFunction,
+  MapFunction,
+  RawMapFunction,
+} from "./Transformer.ts";
 import { XargsStream } from "./XargsStream.ts";
 
 export interface StreamInterface {
@@ -87,6 +92,13 @@ export interface StreamInterface {
    * @returns A new `ReadableStream` instance that will contain the transformed items.
    */
   apply(applyFunction: ApplyFunction<string, string>): LineStream;
+
+  /**
+   * Applies the provided callback function asynchronously to each line.
+   * @param callback - The function to be applied to each line.
+   * @returns A promise that resolves to an array of the results of the callback function.
+   */
+  forEach<T>(callback: RawMapFunction<string, T>): Promise<T[]>;
 
   /**
    * Writes data from a stream to a file asynchronously.
