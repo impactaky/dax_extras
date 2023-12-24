@@ -14,8 +14,24 @@ declare module "./deps.ts" {
   interface CommandBuilder extends StreamInterface {}
 }
 
-CommandBuilder.prototype.toFile = async function (path: PathRef) {
-  await path.write(await this.bytes());
+CommandBuilder.prototype.toFile = async function (
+  path: PathRef | string,
+  options?: Deno.WriteFileOptions,
+) {
+  const pathRef: PathRef = typeof path == "string" ? $.path(path) : path;
+  const file = await pathRef.open({
+    write: true,
+    create: true,
+    ...options,
+  });
+  return this.stdout("piped").spawn().stdout().pipeTo(file.writable);
+};
+
+CommandBuilder.prototype.appendToFile = async function (
+  path: PathRef | string,
+  options?: Deno.WriteFileOptions,
+) {
+  return await this.toFile(path, { append: true, ...options });
 };
 
 CommandBuilder.prototype.pipe = function (next: CommandBuilder) {

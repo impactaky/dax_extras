@@ -105,5 +105,18 @@ export interface StreamInterface {
    * @param path - The path reference object where the file will be written to.
    * @returns Returns a promise which resolves when the operation completes.
    */
-  toFile(path: PathRef): Promise<void>;
+  toFile(
+    path: PathRef | string,
+    options?: Deno.WriteFileOptions,
+  ): Promise<void>;
+
+  /**
+   * Appends data from a stream to a file asynchronously.
+   * @param path - The path reference object where the file will be append to.
+   * @returns Returns a promise which resolves when the operation completes.
+   */
+  appendToFile(
+    path: PathRef | string,
+    options?: Deno.WriteFileOptions,
+  ): Promise<void>;
 }

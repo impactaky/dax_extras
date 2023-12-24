@@ -23,6 +23,15 @@ Deno.test("LineStream.toFile", async () => {
   assertEquals(text, "line1\nline2\n");
 });
 
+Deno.test("LineStream.appendToFile", async () => {
+  const path = $.path(await Deno.makeTempFile());
+  await path.writeText("foo");
+  await $`echo "line1\nline2"`
+    .lineStream().appendToFile(path);
+  const text = path.readTextSync();
+  assertEquals(text, "fooline1\nline2\n");
+});
+
 Deno.test("LineStream.$", async () => {
   const text = await $`echo "line1\nline2"`
     .lineStream()
