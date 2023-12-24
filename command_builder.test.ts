@@ -14,10 +14,38 @@ Deno.test("Quick example", async () => {
   assertEquals(lines, ["hello!", "world!"]);
 });
 
-Deno.test("CommandBuilder.prototype.toFile", async () => {
+Deno.test("CommandBuilder.prototype.toFile(PathRef)", async () => {
   const path = $.path(await Deno.makeTempFile());
   await path.writeText("foo");
   await $`echo "line1\nline2"`.toFile(path);
+  const text = path.readTextSync();
+  console.log(text);
+  assertEquals(text, "line1\nline2\n");
+});
+
+Deno.test("CommandBuilder.prototype.toFile(string)", async () => {
+  const fileName = await Deno.makeTempFile();
+  const path = $.path(fileName);
+  await path.writeText("foo");
+  await $`echo "line1\nline2"`.toFile(fileName);
+  const text = path.readTextSync();
+  console.log(text);
+  assertEquals(text, "line1\nline2\n");
+});
+
+Deno.test("CommandBuilder.prototype.appendToFile(PathRef)", async () => {
+  const path = $.path(await Deno.makeTempFile());
+  await path.writeText("foo");
+  await $`echo "line1\nline2"`.appendToFile(path);
+  const text = path.readTextSync();
+  console.log(text);
+  assertEquals(text, "fooline1\nline2\n");
+});
+
+Deno.test("CommandBuilder.prototype.appendToFile(PathRef) create file", async () => {
+  const path = $.path(await Deno.makeTempFile());
+  await path.remove();
+  await $`echo "line1\nline2"`.appendToFile(path);
   const text = path.readTextSync();
   console.log(text);
   assertEquals(text, "line1\nline2\n");

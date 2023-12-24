@@ -1,4 +1,5 @@
 import {
+  $,
   CommandBuilder,
   CommandResult,
   PathRef,
@@ -65,13 +66,14 @@ export class XargsStream
     return this.lineStream().lines();
   }
 
-  async toFile(path: PathRef) {
-    const pipedStream = this.byteStream();
-    const file = await path.open({ write: true });
-    for await (const bytes of pipedStream) {
-      await file.write(bytes);
-    }
-    file.close();
+  async toFile(path: PathRef | string, options?: Deno.WriteFileOptions) {
+    const pathRef: PathRef = typeof path == "string" ? $.path(path) : path;
+    const file = await pathRef.open({ write: true, create: true, ...options });
+    return await this.byteStream().pipeTo(file.writable);
+  }
+
+  async appendToFile(path: PathRef | string, options?: Deno.WriteFileOptions) {
+    return await this.toFile(path, { append: true, ...options });
   }
 
   pipeThrough(transform: TransformStream): LineStream {

@@ -1,4 +1,4 @@
-import { CommandBuilder, PathRef } from "../deps.ts";
+import { $, CommandBuilder, PathRef } from "../deps.ts";
 import { StreamInterface } from "./Stream.ts";
 
 import {
@@ -74,12 +74,24 @@ export class LineStream implements StreamInterface {
     return lines;
   }
 
-  async toFile(path: PathRef): Promise<void> {
-    const file = await path.open({ write: true });
-    for await (const line of this.#stream) {
-      await file.writeText(line + "\n");
-    }
-    file.close();
+  async toFile(
+    path: PathRef | string,
+    options?: Deno.WriteFileOptions,
+  ): Promise<void> {
+    const pathRef: PathRef = typeof path == "string" ? $.path(path) : path;
+    const file = await pathRef.open({
+      write: true,
+      create: true,
+      ...options,
+    });
+    return this.byteStream().pipeTo(file.writable);
+  }
+
+  async appendToFile(
+    path: PathRef | string,
+    options?: Deno.WriteFileOptions,
+  ): Promise<void> {
+    return await this.toFile(path, { append: true, ...options });
   }
 
   pipeThrough(transform: TransformStream): LineStream {
