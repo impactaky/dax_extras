@@ -14,12 +14,20 @@ Deno.test("LineStram.lines", async () => {
   assertEquals(lines, ["line1", "line2"]);
 });
 
-Deno.test("LineStream.toFile", async () => {
+Deno.test("LineStream.toFile(PathRef)", async () => {
   const path = $.path(await Deno.makeTempFile());
   await path.writeText("foo");
   await $`echo "line1\nline2"`
     .lineStream().toFile(path);
   const text = path.readTextSync();
+  assertEquals(text, "line1\nline2\n");
+});
+
+Deno.test("LineStream.toFile(string)", async () => {
+  const path = await Deno.makeTempFile();
+  await $`echo "line1\nline2"`
+    .lineStream().toFile(path);
+  const text = $.path(path).readTextSync();
   assertEquals(text, "line1\nline2\n");
 });
 

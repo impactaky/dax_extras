@@ -18,7 +18,7 @@ Deno.test("XargsStream.text", async () => {
   );
 });
 
-Deno.test("XargsStream.text", async () => {
+Deno.test("XargsStream.toFile(PathRef)", async () => {
   const path = $.path(await Deno.makeTempFile());
   path.writeText("foo");
   await $`echo "1\n2"`.xargs((i) => $`echo ${i}${i}`.stdout("piped")).toFile(
@@ -26,6 +26,26 @@ Deno.test("XargsStream.text", async () => {
   );
   const text = path.readTextSync();
   assertEquals(text, "11\n22\n");
+});
+
+Deno.test("XargsStream.toFile(string)", async () => {
+  const path = await Deno.makeTempFile();
+  await $`echo "1\n2"`.xargs((i) => $`echo ${i}${i}`.stdout("piped")).toFile(
+    path,
+  );
+  const text = $.path(path).readTextSync();
+  assertEquals(text, "11\n22\n");
+});
+
+Deno.test("XargsStream.appendToFile", async () => {
+  const path = $.path(await Deno.makeTempFile());
+  path.writeText("foo");
+  await $`echo "1\n2"`.xargs((i) => $`echo ${i}${i}`.stdout("piped"))
+    .appendToFile(
+      path,
+    );
+  const text = path.readTextSync();
+  assertEquals(text, "foo11\n22\n");
 });
 
 Deno.test("XargsStream.pipeThrough", async () => {
