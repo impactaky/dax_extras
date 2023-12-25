@@ -5,6 +5,10 @@ Deno.test("$.nproc", async () => {
   assertEquals($.nproc(), Number(await $`nproc`.text()));
 });
 
+Deno.test("$.split", () => {
+  assertEquals($.split(" 1  2 3 "), ["1", "2", "3"]);
+});
+
 Deno.test("$.xargs", async () => {
   const func = async (n: number) => {
     await $.sleep(n * 100);
