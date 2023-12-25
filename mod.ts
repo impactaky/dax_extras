@@ -8,6 +8,7 @@ import {
 } from "./LineStream/Transformer.ts";
 import { LineStream, XargsFunction } from "./LineStream/LineStream.ts";
 import { StreamInterface } from "./LineStream/Stream.ts";
+import { extras } from "./extras.ts";
 
 declare module "./deps.ts" {
   // deno-lint-ignore no-empty-interface
@@ -83,11 +84,7 @@ CommandBuilder.prototype.forEach = function <T>(
 
 const $ = build$({
   commandBuilder: new CommandBuilder(),
-  extras: {
-    add(a: number, b: number) {
-      return a + b;
-    },
-  },
+  extras: extras,
 });
 
 export default $;

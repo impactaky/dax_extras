@@ -106,6 +106,10 @@ assertEquals(result[0], "result val2");
 assertEquals(result[1], "result val2");
 ```
 
+## Extra functions
+
+See [extras.ts](extras.ts) and [extras.test.ts](extras.test.ts).
+
 ## Use with your dax extends
 
 You can import dax_extras like this.
