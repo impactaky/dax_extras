@@ -5,7 +5,7 @@ Deno.test("$.nproc", async () => {
   assertEquals($.nproc(), Number(await $`nproc`.text()));
 });
 
-Deno.test("$.split", async () => {
+Deno.test("$.split", () => {
   assertEquals($.split(" 1  2 3 "), ["1", "2", "3"]);
 });
 
