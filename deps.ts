@@ -1,5 +1,5 @@
 export {
-  $,
+  build$,
   CommandBuilder,
   CommandResult,
   PathRef,

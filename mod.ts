@@ -1,4 +1,4 @@
-import { $, CommandBuilder, PathRef, TextLineStream } from "./deps.ts";
+import { build$, CommandBuilder, PathRef, TextLineStream } from "./deps.ts";
 
 import {
   ApplyFunction,
@@ -80,5 +80,14 @@ CommandBuilder.prototype.forEach = function <T>(
 ) {
   return this.lineStream().forEach(callback);
 };
+
+const $ = build$({
+  commandBuilder: new CommandBuilder(),
+  extras: {
+    add(a: number, b: number) {
+      return a + b;
+    },
+  },
+});
 
 export default $;
