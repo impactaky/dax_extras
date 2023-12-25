@@ -1,4 +1,4 @@
-import { $, CommandBuilder, PathRef, TextLineStream } from "./deps.ts";
+import { build$, CommandBuilder, PathRef, TextLineStream } from "./deps.ts";
 
 import {
   ApplyFunction,
@@ -8,6 +8,7 @@ import {
 } from "./LineStream/Transformer.ts";
 import { LineStream, XargsFunction } from "./LineStream/LineStream.ts";
 import { StreamInterface } from "./LineStream/Stream.ts";
+import { extras } from "./extras.ts";
 
 declare module "./deps.ts" {
   // deno-lint-ignore no-empty-interface
@@ -80,5 +81,10 @@ CommandBuilder.prototype.forEach = function <T>(
 ) {
   return this.lineStream().forEach(callback);
 };
+
+const $ = build$({
+  commandBuilder: new CommandBuilder(),
+  extras: extras,
+});
 
 export default $;

@@ -1,5 +1,4 @@
 import {
-  $,
   CommandBuilder,
   CommandResult,
   PathRef,
@@ -14,6 +13,7 @@ import {
   RawMapFunction,
 } from "../LineStream/Transformer.ts";
 import { StreamInterface } from "./Stream.ts";
+import $ from "../mod.ts";
 
 export class XargsStream
   implements StreamInterface, PromiseLike<CommandResult[]> {

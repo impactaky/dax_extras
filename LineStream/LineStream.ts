@@ -1,5 +1,6 @@
-import { $, CommandBuilder, PathRef } from "../deps.ts";
+import { CommandBuilder, PathRef } from "../deps.ts";
 import { StreamInterface } from "./Stream.ts";
+import $ from "../mod.ts";
 
 import {
   ApplyFunction,
