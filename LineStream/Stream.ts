@@ -1,4 +1,4 @@
-import { CommandBuilder, PathRef } from "../deps.ts";
+import { CommandBuilder } from "../deps.ts";
 import { LineStream, XargsFunction } from "./LineStream.ts";
 import {
   ApplyFunction,
