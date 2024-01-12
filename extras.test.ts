@@ -40,3 +40,8 @@ Deno.test("$.cat", async () => {
   const lines = await $.cat(path).lines();
   assertEquals(lines, ["foo", "bar"]);
 });
+
+Deno.test("$.command", async () => {
+  const text = await $.command(["echo", "foo", "bar"]).text();
+  assertEquals(text, "foo bar");
+});

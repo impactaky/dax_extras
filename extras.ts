@@ -1,4 +1,4 @@
-import { pooledMap, TextLineStream } from "./deps.ts";
+import { CommandBuilder, pooledMap, TextLineStream } from "./deps.ts";
 import { LineStream } from "./LineStream/LineStream.ts";
 import $ from "./mod.ts";
 import { PathRefLike } from "./mod.ts";
@@ -25,5 +25,8 @@ export const extras = {
         .pipeThrough(new TextDecoderStream())
         .pipeThrough(new TextLineStream()),
     );
+  },
+  command(command: string | string[]): CommandBuilder {
+    return new CommandBuilder().command(command);
   },
 };
