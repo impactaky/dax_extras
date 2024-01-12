@@ -50,10 +50,10 @@ export interface StreamInterface {
 
   /**
    * Pipes the output of the current command into another command.
-   * @param next - The command as a string to pipe into.
+   * @param next - The command to pipe into.
    * @returns A new command builder representing the piped command.
    */
-  $(next: string): CommandBuilder;
+  $(next: string | string[]): CommandBuilder;
 
   /**
    * Creates a new line stream for reading the output of the command.
