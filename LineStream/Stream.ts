@@ -7,6 +7,7 @@ import {
   RawMapFunction,
 } from "./Transformer.ts";
 import { XargsStream } from "./XargsStream.ts";
+import { PathRefLike } from "../mod.ts";
 
 export interface StreamInterface {
   /**
@@ -106,7 +107,7 @@ export interface StreamInterface {
    * @returns Returns a promise which resolves when the operation completes.
    */
   toFile(
-    path: PathRef | string,
+    path: PathRefLike,
     options?: Deno.WriteFileOptions,
   ): Promise<void>;
 
@@ -116,7 +117,7 @@ export interface StreamInterface {
    * @returns Returns a promise which resolves when the operation completes.
    */
   appendToFile(
-    path: PathRef | string,
+    path: PathRefLike,
     options?: Deno.WriteFileOptions,
   ): Promise<void>;
 }
