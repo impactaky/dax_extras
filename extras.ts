@@ -1,4 +1,7 @@
-import { pooledMap } from "./deps.ts";
+import { pooledMap, TextLineStream } from "./deps.ts";
+import { LineStream } from "./LineStream/LineStream.ts";
+import $ from "./mod.ts";
+import { PathRefLike } from "./mod.ts";
 
 export const extras = {
   nproc(): number {
@@ -14,5 +17,13 @@ export const extras = {
   ) {
     const processed = pooledMap(parallel, array, iteratorFn);
     for await (const _ of processed);
+  },
+  cat(file: PathRefLike): LineStream {
+    const pathRef = $.path(file);
+    return new LineStream(
+      pathRef.openSync().readable
+        .pipeThrough(new TextDecoderStream())
+        .pipeThrough(new TextLineStream()),
+    );
   },
 };
