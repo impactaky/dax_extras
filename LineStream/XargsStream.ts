@@ -14,6 +14,7 @@ import {
 } from "../LineStream/Transformer.ts";
 import { StreamInterface } from "./Stream.ts";
 import $ from "../mod.ts";
+import { PathRefLike } from "../mod.ts";
 
 export class XargsStream
   implements StreamInterface, PromiseLike<CommandResult[]> {
@@ -66,13 +67,13 @@ export class XargsStream
     return this.lineStream().lines();
   }
 
-  async toFile(path: PathRef | string, options?: Deno.WriteFileOptions) {
-    const pathRef: PathRef = typeof path == "string" ? $.path(path) : path;
+  async toFile(path: PathRefLike, options?: Deno.WriteFileOptions) {
+    const pathRef: PathRef = $.path(path);
     const file = await pathRef.open({ write: true, create: true, ...options });
     return await this.byteStream().pipeTo(file.writable);
   }
 
-  async appendToFile(path: PathRef | string, options?: Deno.WriteFileOptions) {
+  async appendToFile(path: PathRefLike, options?: Deno.WriteFileOptions) {
     return await this.toFile(path, { append: true, ...options });
   }
 

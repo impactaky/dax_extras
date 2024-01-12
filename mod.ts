@@ -10,16 +10,18 @@ import { LineStream, XargsFunction } from "./LineStream/LineStream.ts";
 import { StreamInterface } from "./LineStream/Stream.ts";
 import { extras } from "./extras.ts";
 
+export type PathRefLike = string | URL | ImportMeta | PathRef;
+
 declare module "./deps.ts" {
   // deno-lint-ignore no-empty-interface
   interface CommandBuilder extends StreamInterface {}
 }
 
 CommandBuilder.prototype.toFile = async function (
-  path: PathRef | string,
+  path: PathRefLike,
   options?: Deno.WriteFileOptions,
 ) {
-  const pathRef: PathRef = typeof path == "string" ? $.path(path) : path;
+  const pathRef: PathRef = $.path(path);
   const file = await pathRef.open({
     write: true,
     create: true,
@@ -29,7 +31,7 @@ CommandBuilder.prototype.toFile = async function (
 };
 
 CommandBuilder.prototype.appendToFile = async function (
-  path: PathRef | string,
+  path: PathRefLike,
   options?: Deno.WriteFileOptions,
 ) {
   return await this.toFile(path, { append: true, ...options });

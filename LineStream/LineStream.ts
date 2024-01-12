@@ -1,6 +1,7 @@
 import { CommandBuilder, PathRef } from "../deps.ts";
 import { StreamInterface } from "./Stream.ts";
 import $ from "../mod.ts";
+import { PathRefLike } from "../mod.ts";
 
 import {
   ApplyFunction,
@@ -76,10 +77,10 @@ export class LineStream implements StreamInterface {
   }
 
   async toFile(
-    path: PathRef | string,
+    path: PathRefLike,
     options?: Deno.WriteFileOptions,
   ): Promise<void> {
-    const pathRef: PathRef = typeof path == "string" ? $.path(path) : path;
+    const pathRef: PathRef = $.path(path);
     const file = await pathRef.open({
       write: true,
       create: true,
@@ -89,7 +90,7 @@ export class LineStream implements StreamInterface {
   }
 
   async appendToFile(
-    path: PathRef | string,
+    path: PathRefLike,
     options?: Deno.WriteFileOptions,
   ): Promise<void> {
     return await this.toFile(path, { append: true, ...options });
