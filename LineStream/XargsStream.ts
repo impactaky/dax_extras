@@ -97,7 +97,7 @@ export class XargsStream
     return next.stdin(pipedStream);
   }
 
-  $(next: string): CommandBuilder {
+  $(next: string | string[]): CommandBuilder {
     const pipedStream = this.byteStream();
     return new CommandBuilder().command(next).stdin(pipedStream);
   }

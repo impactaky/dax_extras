@@ -108,7 +108,7 @@ export class LineStream implements StreamInterface {
     return next.stdin(this.byteStream());
   }
 
-  $(next: string): CommandBuilder {
+  $(next: string | string[]): CommandBuilder {
     return new CommandBuilder().command(next).stdin(this.byteStream());
   }
 
