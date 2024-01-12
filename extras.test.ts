@@ -33,3 +33,10 @@ Deno.test("$.xargs", async () => {
     }
   }
 });
+
+Deno.test("$.cat", async () => {
+  const path = $.path(await Deno.makeTempFile());
+  await path.writeText("foo\nbar");
+  const lines = await $.cat(path).lines();
+  assertEquals(lines, ["foo", "bar"]);
+});
