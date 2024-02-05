@@ -37,11 +37,6 @@ CommandBuilder.prototype.appendToFile = async function (
   return await this.toFile(path, { append: true, ...options });
 };
 
-CommandBuilder.prototype.pipe = function (next: CommandBuilder) {
-  const p = this.stdout("piped").spawn();
-  return next.stdin(p.stdout());
-};
-
 CommandBuilder.prototype.$ = function (next: string | string[]) {
   const p = this.stdout("piped").spawn();
   return new CommandBuilder().command(next).stdin(p.stdout());
