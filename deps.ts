@@ -3,7 +3,7 @@ export {
   CommandBuilder,
   CommandResult,
   PathRef,
-} from "https://deno.land/x/dax@0.36.0/mod.ts";
+} from "https://deno.land/x/dax@0.38.0/mod.ts";
 export {
   TextLineStream,
   toTransformStream,
